@@ -6,7 +6,7 @@ function capitalize(word) {
 function getHumanChoice() {
     let choice = prompt("Enter your choice: ", "");
     if (choice) choice = capitalize(choice);
-    console.log(`You choose ${choice}.`);
+    display.textContent += `You choose ${choice}.\n`;
     return choice;
 }
 
@@ -32,7 +32,6 @@ function getComputerChoice() {
             break;         
     }
 
-    console.log(`Computer chooses ${choice}.`);
     choice = capitalize(choice);
     return choice;
 }
@@ -43,12 +42,17 @@ function isValid(humanChoice) {
 
 function playRound(humanChoice, computerChoice) {
     if (!isValid(humanChoice)) {
-        console.log("Invalid Choice!");
+        display.textContent += "Invalid Choice!\n";
         return;
     }
 
+    display = document.createElement('div');
+
+    display.textContent += `You chose ${humanChoice}.\n`;
+    display.textContent += `Computer chose ${computerChoice}.\n`;
+
     if (humanChoice === computerChoice) {
-        console.log(`You and computer made the same choice ${humanChoice}. This round is a draw!`);
+        display.textContent += `You and computer made the same choice ${humanChoice}. This round is a draw!`;
         return;
     }
 
@@ -63,29 +67,29 @@ function playRound(humanChoice, computerChoice) {
 
     let text;
     if (winner === 'Computer') {
-        text = `You lost! ${computerChoice} beats ${humanChoice}`;
+        text = `You lost! ${computerChoice} beats ${humanChoice}.`;
         computerScore++;
     } else {
         text = `You won! ${humanChoice} beats ${computerChoice}.`;
         humanScore++;
     }
-    console.log(text);
+
+    display.textContent += text + '\n';
+
+    const body = document.querySelector('body');
+    body.appendChild(display);
 }
 
 let humanScore = 0;
 let computerScore = 0;
 
-function playGame() {
-    numberOfGames = 5;
-    
-    for (let i = 0; i < numberOfGames; i++) {
-        const humanSelection = getHumanChoice();
-        const computerSelection = getComputerChoice();
+const buttons = document.querySelector('.button');
 
-        playRound(humanSelection, computerSelection);
-    }
+buttons.addEventListener('click', (event) => {
+    const humanSelection = event.target.textContent;
+    const computerSelection = getComputerChoice();
 
-    console.log(`Scores\nHuman: ${humanScore}\nComputer: ${computerScore}`)
-}
+    playRound(humanSelection, computerSelection);
+});
 
-playGame();
+let display;
